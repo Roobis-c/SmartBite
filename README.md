@@ -13,6 +13,7 @@ AI powered Smart Diet Planner
 
 ---
 
+
 ### **Tech Stack**
 - **Frontend**: HTML, CSS, JavaScript
 - **Design**: Modern Dark Theme for a professional look
@@ -36,4 +37,4 @@ AI powered Smart Diet Planner
 
 ---
 
-
+![Screenshot 2025-05-08 202408](https://github.com/user-attachments/assets/5928b698-618a-45fa-8db9-442217773b05)
