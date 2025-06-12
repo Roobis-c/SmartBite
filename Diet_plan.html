@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartBite</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #2d89ef;
+      --background-dark: #121212;
+      --surface-dark: #1e1e1e;
+      --accent: #4dd0e1;
+      --text-primary: #f0f0f0;
+      --text-secondary: #aaaaaa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+      color: #ffffff;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: row;
+      height: 100vh;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .left-panel {
+      width: 35%;
+      background: var(--surface-dark);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      overflow-y: auto;
+      height: 600px;
+    }
+
+    .right-panel {
+      flex: 1;
+      background: var(--surface-dark);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      display: none;
+      height: 600px;
+    }
+
+    label {
+      display: block;
+      margin-top: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      background-color: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border 0.2s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+
+    button {
+      margin-top: 30px;
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      width: 100%;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #1a6fd8;
+    }
+
+    #bmi-result {
+      margin-top: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .output-section {
+      display: block;
+      background: #2c2c2c;
+      padding: 30px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      margin-top: 20px;
+    }
+
+    .study-plan {
+      margin-top: 20px;
+      background-color: #242424;
+      padding: 20px;
+      border-left: 4px solid var(--primary-color);
+      border-radius: 6px;
+      font-size: 15px;
+      white-space: pre-wrap;
+      color: var(--text-secondary);
+    }
+
+    .loader {
+      border: 5px solid #2a2a2a;
+      border-top: 5px solid var(--primary-color);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        flex-direction: column;
+      }
+
+      .left-panel, .right-panel {
+        width: 100%;
+        position: static;
+      }
+    }
+  </style>
+</head>
+
+  
+<body>
+
+  <h1>SmartBite🧬</h1>
+
+  <div class="main">
+    <div class="left-panel">
+      <h3>🧠 BMI Calculator</h3>
+      <label for="height">Height (cm):</label>
+      <input type="number" id="height" placeholder="e.g. 170" />
+
+      <label for="current-weight">Weight (kg):</label>
+      <input type="number" id="current-weight" placeholder="e.g. 70" />
+
+      <button id="bmi-btn">Calculate BMI</button>
+      <div id="bmi-result"></div>
+    </div>
+
+    <div class="right-panel" id="plan-form" style="display: none;">
+      <h3>🧪 Personalized Diet Planner</h3>
+
+      <label for="target-weight">Expected Weight (kg):</label>
+      <input type="number" id="target-weight" placeholder="e.g. 60" />
+
+      <label for="conditions">Disease / Allergies (if any):</label>
+      <textarea id="conditions" rows="3" placeholder="e.g. diabetes, lactose intolerance..."></textarea>
+
+      <label for="diet-type">Select Diet Type:</label>
+      <select id="diet-type">
+        <option value="vegetarian">Vegetarian</option>
+        <option value="non-vegetarian">Non-Vegetarian</option>
+        <option value="vegan">Vegan</option>
+        <option value="keto">Keto</option>
+        <option value="diabetic-safe">Diabetic-safe</option>
+      </select>
+
+      <button id="generate-btn">Generate Diet Plan</button>
+      <div id="loader" class="loader" style="display:none;"></div>
+
+    </div>
+
+  </div>
+      
+  <div id="output-section" class="output-section" style="display:none;">
+    <h2>🧬 Your AI Diet Plan</h2>
+    <div id="study-plan" class="study-plan"></div>
+    <button id="download-btn">Download Plan</button>
+  </div>
+
+  <script>
+    document.getElementById('bmi-btn').addEventListener('click', () => {
+      const height = parseFloat(document.getElementById('height').value);
+      const weight = parseFloat(document.getElementById('current-weight').value);
+      const result = document.getElementById('bmi-result');
+      const planForm = document.getElementById('plan-form');
+
+      if (!height || !weight) {
+        alert("Please enter both height and weight.");
+        return;
+      }
+
+      const heightM = height / 100;
+      const bmi = weight / (heightM * heightM);
+      let category = '';
+
+      if (bmi < 18.5) category = 'Underweight';
+      else if (bmi < 24.9) category = 'Normal';
+      else if (bmi < 29.9) category = 'Overweight';
+      else category = 'Obese';
+
+      result.innerHTML = `Your BMI is <span style="color:#0ff">${bmi.toFixed(2)}</span> (${category})`;
+      planForm.style.display = 'block';
+    });
+
+    document.getElementById('generate-btn').addEventListener('click', async () => {
+      const currentWeight = document.getElementById('current-weight').value;
+      const targetWeight = document.getElementById('target-weight').value;
+      const conditions = document.getElementById('conditions').value.trim();
+      const dietType = document.getElementById('diet-type').value;
+
+      const loader = document.getElementById('loader');
+      const output = document.getElementById('output-section');
+      const planDiv = document.getElementById('study-plan');
+
+      if (!targetWeight) {
+        alert("Please enter target weight.");
+        return;
+      }
+
+      let prompt = `Create a futuristic 2100-style 30-day diet plan for a ${dietType} person going from ${currentWeight}kg to ${targetWeight}kg.`;
+      if (conditions) {
+        prompt += ` The person has the following conditions: ${conditions}. Ensure the plan is safe.`;
+      }
+
+      prompt += ` Include meals for 7 days (breakfast, lunch, dinner, snacks), water intake, and exercise tips. Use clean formatting.`;
+
+      loader.style.display = 'block';
+
+      try {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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'
+        },
+          body: JSON.stringify({
+            model: 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 800
+          })
+        });
+
+        const data = await response.json();
+        planDiv.innerHTML = `<p>${data.choices[0].message.content}</p>`;
+        output.style.display = 'block';
+      } catch (err) {
+        console.error(err);
+        planDiv.innerHTML = "<p style='color:red'>Error fetching plan. Try again.</p>";
+      }
+
+      loader.style.display = 'none';
+    });
+
+    document.getElementById('download-btn').addEventListener('click', () => {
+      html2canvas(document.getElementById('study-plan'), {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: "#000"
+      }).then(canvas => {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL("image/png");
+        link.download = "diet-plan-2100.png";
+        link.click();
+      });
+    });
+  </script>
+
+</body>
+</html>
